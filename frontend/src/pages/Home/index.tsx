@@ -2,7 +2,7 @@ import * as SC from './styles'
 import Input from '../../components/Input'
 import React, { useState } from 'react'
 import Button from '../../components/Button'
-import del from '../../assets/delete.png'
+import { postTask } from './utils'
 
 
 const Home = () => {
@@ -20,6 +20,7 @@ const Home = () => {
                 temp[index] = task;
                 setTaskes(temp);
                 setEditWord(undefined);
+                postTask(task);
             }
             else {
                 setTaskes(arr => {

@@ -1,6 +1,8 @@
 import { Router } from "express";
-import * as taskController from "../controllers/taskController";
+import * as TaskController from "../controllers/taskController";
 
-const router = Router();
-router.get("/get_tasks", taskController.getTasks);
-export default router;
+const routes = Router();
+routes.post("/task", TaskController.createATask);
+routes.get("/task", TaskController.getTasks);
+
+export default routes;

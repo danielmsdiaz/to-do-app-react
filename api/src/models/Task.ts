@@ -1,24 +1,7 @@
-import {Model, DataTypes} from "sequelize";
-import {sequelize} from "../instances/pg";
+import {model, connection, Model } from "mongoose";
+import { TaskSchema } from "../database/schemas/taskSchema";
+import { TaskType } from "../types/taskType";
 
-//criando uma interface para definir como será a entidade usuario, para poder extender de Model (ficar no formato aceito pelo sequelize)
-export interface TaskIntance extends Model{
-    id: number;
-    content: string;
-}
+const modelName: string = "Task";
+export default (connection && connection.models[modelName]) ? connection.models[modelName] as Model<TaskType> : model<TaskType>(modelName, TaskSchema);
 
-// definindo o modelo para ser persistido no banco
-export const Task = sequelize.define<TaskIntance>('Task', {
-    id: {
-        primaryKey: true,
-        autoIncrement: true,
-        type: DataTypes.INTEGER
-    },
-    content: {
-        type: DataTypes.STRING
-    }
-
-}, {
-    tableName: "tasks",
-    timestamps: false
-});
