@@ -12,6 +12,8 @@ const Home = () => {
     const [editWord, setEditWord] = useState<string | undefined>(undefined);
     const [keyRegister, setKeyRegister] = useState<number | undefined>(undefined);
 
+    //postTask("sdds");
+
     const addRecord = () => {
         if (task !== "") {
             if (editWord) {
