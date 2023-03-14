@@ -1,33 +1,32 @@
 import * as SC from './styles'
 import Input from '../../components/Input'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Button from '../../components/Button'
-import { postTask } from './utils'
+import { deleteTask, editTask, getTasks, postTask } from './utils'
 
 
 const Home = () => {
 
     const [task, setTask] = useState<string>("");
-    const [taskes, setTaskes] = useState<string[]>([]);
-    const [editWord, setEditWord] = useState<string | undefined>(undefined);
-    const [keyRegister, setKeyRegister] = useState<number | undefined>(undefined);
+    const [tasks, setTasks] = useState<{ _id: string, content: string }[]>([]);
 
-    //postTask("sdds");
+    const [editWord, setEditWord] = useState<string | undefined>(undefined);
+    const [keyRegister, setKeyRegister] = useState<string | undefined>(undefined);
+
+    useEffect(() => {
+        getTasks((arr: any) => {
+            setTasks(arr);
+        });
+    });
 
     const addRecord = () => {
         if (task !== "") {
             if (editWord) {
-                let temp: string[] = taskes;
-                let index = temp.indexOf(editWord);
-                temp[index] = task;
-                setTaskes(temp);
+                editTask({_id: keyRegister, content: task});
                 setEditWord(undefined);
-                postTask(task);
             }
             else {
-                setTaskes(arr => {
-                    return [...arr, task]
-                });
+                postTask(task);
             }
 
             return setTask("");
@@ -35,14 +34,14 @@ const Home = () => {
         alert("Digite um valor!");
     }
 
-    const removeRecord = (value: string) => {
-        if (value == editWord) {
+    const removeRecord = (task: { _id: string, content: string }) => {
+        if (task.content == editWord) {
             return alert("Não é possivel remover um valor que está sendo editado!")
         }
-        setTaskes(taskes.filter(item => item !== value));
+        deleteTask(task);
     }
 
-    const editRecord = (value: string, key: number) => {
+    const editRecord = (value: string, key: string) => {
         if (!editWord) {
             setTask(value);
             setEditWord(value);
@@ -74,19 +73,19 @@ const Home = () => {
                     </SC.upperPart>
                     <SC.lowerPart>
                         <SC.recordsArea>
-                            {taskes && (
-                                taskes.map((item, key) => {
+                            {tasks && (
+                                tasks.map((item) => {
                                     return <SC.record>
-                                        <SC.recordText key={key}>
-                                            {item}
+                                        <SC.recordText>
+                                            {item.content}
                                         </SC.recordText>
                                         <SC.recordButtons>
                                             <Button onClick={() => removeRecord(item)}>-</Button>
-                                            {key == keyRegister &&
-                                                <Button onClick={() => editRecord(item, key)}>{editWord == undefined ? "Edit" : "X"}</Button>
+                                            {item._id == keyRegister &&
+                                                <Button onClick={() => editRecord(item.content, item._id)}>{editWord == undefined ? "Edit" : "X"}</Button>
                                             }
-                                            {key !== keyRegister &&
-                                                <Button onClick={() => editRecord(item, key)}>Edit</Button>
+                                            {item._id !== keyRegister &&
+                                                <Button onClick={() => editRecord(item.content, item._id)}>Edit</Button>
                                             }
                                         </SC.recordButtons>
                                     </SC.record>
